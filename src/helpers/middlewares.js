@@ -1,8 +1,8 @@
 const uuidv4 = require('uuid/v4');
 const jsonwebtoken = require('jsonwebtoken');
 const util = require('util');
-const logger = require('./logger').server;
 const config = require('../config');
+const { logger, debug } = require('./logger')('helper:middleware');
 
 const jwtVerify = util.promisify(jsonwebtoken.verify);
 const middlewares = {};

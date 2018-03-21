@@ -2,11 +2,11 @@
   "name": "nean-backend",
   "version": "1.0.0",
   "description": "Nean stack node express nedb backend application",
-  "main": "src/server.js",
+  "main": "src/app.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon"
+    "dev": "set DEBUG=nean:* && nodemon"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,9 @@
     "nodejs",
     "express",
     "nedb",
-    "camo"
+    "camo",
+    "pino",
+    "jsonwebtoken"
   ],
   "author": "angusyg",
   "license": "MIT",
@@ -30,11 +32,14 @@
     "body-parser": "^1.18.2",
     "camo": "^0.12.3",
     "compression": "^1.7.2",
+    "debug": "^3.1.0",
     "express": "^4.16.2",
+    "express-pino-logger": "^3.0.1",
     "jsonwebtoken": "^8.2.0",
-    "uuid": "^3.2.1",
-    "winston": "^2.4.0",
-    "winston-daily-rotate-file": "^1.7.2"
+    "pino": "^4.14.0",
+    "pino-debug": "^1.1.1",
+    "pino-multi-stream": "^3.1.2",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^4.17.0",

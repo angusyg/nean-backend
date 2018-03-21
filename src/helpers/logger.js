@@ -1,25 +1,38 @@
-const winston = require('winston');
-const WinstonRotator = require('winston-daily-rotate-file');
-const config = require('../config');
+const fs = require('fs');
+const pinoDebug = require('pino-debug');
+const pino = require('pino');
+const multistream = require('pino-multi-stream').multistream;
 
-const logger = {};
-
-winston.emitErrs = false;
-
-function getTransports(type) {
-  const transports = [new WinstonRotator(config.log[type].file)];
-  if (process.env.NODE_ENV !== 'production') transports.push(new winston.transports.Console(config.log[type].console));
-  return transports;
-}
-
-function getLogger(type) {
-  return new winston.Logger({
-    transports: getTransports(type),
-    exitOnError: config.log.exitOnError,
+const logFile = './logs/server.log';
+const streams = [{
+  level: process.env.LEVEL || 'info',
+  stream: fs.createWriteStream(logFile),
+}];
+if (process.env.NODE_ENV !== 'production') {
+  streams.push({
+    level: 'debug',
+    stream: process.stderr,
   });
 }
+const logger = pino({
+  level: 'debug',
+}, multistream(streams));
 
-logger.server = getLogger('server');
-logger.client = getLogger('client');
+pinoDebug(logger, {
+  auto: false,
+  map: {
+    'nean:*': 'debug',
+  },
+});
 
-module.exports = logger;
+module.exports = (name) => {
+  if (name) {
+    return {
+      logger,
+      debug: require('debug')(`nean:${name}`)
+    };
+  }
+  return {
+    logger,
+  };
+};

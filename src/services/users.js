@@ -19,20 +19,14 @@ function generateAccessToken(user) {
 function registerRefreshToken(user) {
   return new Promise((resolve, reject) => {
     const refreshToken = uuidv4();
-    User.findOneAndUpdate({
-        _id: user._id
-      }, {
-        refreshToken
-      })
+    User.findOneAndUpdate({ _id: user._id }, { refreshToken })
       .catch(err => reject(new ApiError(loginEndpoint.errors[1], err)))
       .then(() => resolve(refreshToken));
   });
 }
 
 service.login = infos => new Promise((resolve, reject) => {
-  User.findOne({
-      login: infos.login
-    })
+  User.findOne({ login: infos.login })
     .catch(err => reject(err))
     .then((user) => {
       if (!user) reject(new ApiError(loginEndpoint.errors[1]));
@@ -55,14 +49,9 @@ service.login = infos => new Promise((resolve, reject) => {
 });
 
 service.refreshToken = (infos, refreshToken) => new Promise((resolve, reject) => {
-  User.findOne({
-      login: infos.login,
-      refreshToken,
-    })
+  User.findOne({ login: infos.login, refreshToken })
     .catch(err => reject(new ApiError(refreshTokenEndpoint.errors[2], err)))
-    .then(user => resolve({
-      accessToken: generateAccessToken(user)
-    }));
+    .then(user => resolve({ accessToken: generateAccessToken(user) }));
 });
 
 module.exports = service;
