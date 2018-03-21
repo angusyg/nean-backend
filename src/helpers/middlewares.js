@@ -54,19 +54,6 @@ middlewares.errorHandler = (err, req, res, next) => {
 };
 
 /**
- * Generates an unique ID to identify the request
- *
- * @param  {Object}         req  - Request received
- * @param  {Object}         res  - Response to be send
- * @param  {nextMiddleware} next - Callback to pass control to next middleware
- */
-middlewares.generateRequestUUID = (req, res, next) => {
-  req.uuid = uuidv4();
-  logger.debug(`[Request:${req.uuid}][IP:${req.ip}] - ${req.method} "${req.originalUrl}"`);
-  next();
-};
-
-/**
  * Extract user from JWT Token sent in header
  * @param  {Object}         req  - Request received
  * @param  {Object}         res  - Response to be send
@@ -106,16 +93,6 @@ middlewares.loginRequired = async (req, res, next) => {
       reqId: req.uuid,
     });
   }
-};
-
-/**
- * Bind endpoint to a request
- * @param  {Object} endpoint - Endpoint aim by request
- * @return {function} middleware to bind endpoint to request
- */
-middlewares.bindEndpoint = endpoint => (req, res, next) => {
-  req.endpoint = endpoint;
-  next();
 };
 
 /**

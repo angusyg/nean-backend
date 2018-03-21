@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const pino = require('express-pino-logger');
 const uuidv4 = require('uuid/v4');
+const createNamespace = require('continuation-local-storage').createNamespace;
 const appMiddleware = require('./helpers/middlewares');
 const apiController = require('./controllers/api');
 const config = require('./config');
@@ -10,6 +11,8 @@ const { logger } = require('./helpers/logger')();
 
 
 const app = express();
+
+createNamespace('requestSession');
 
 // configuration: DB connection
 config.connectDb();
@@ -21,9 +24,8 @@ app.use(pino({
 // middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false,
+  extended: true,
 }));
-app.use(appMiddleware.generateRequestUUID);
 
 // Static files
 app.use(compression());

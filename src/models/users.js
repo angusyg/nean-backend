@@ -21,16 +21,16 @@ const User = class User extends Document {
     };
   }
 
-  preSave() {
-    this.password = bcrypt.hashSync(this.password, config.saltFactor);
-  }
-
   comparePassword(candidatePassword) {
     return new Promise((resolve, reject) => {
       bcrypt.compare(candidatePassword, this.password)
         .catch(err => reject(err))
         .then(match => resolve(match));
     });
+  }
+
+  preSave() {
+    this.password = bcrypt.hashSync(this.password, config.saltFactor);
   }
 };
 

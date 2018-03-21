@@ -2,34 +2,42 @@ const fs = require('fs');
 const pinoDebug = require('pino-debug');
 const pino = require('pino');
 const multistream = require('pino-multi-stream').multistream;
+const debug = require('debug');
+const config = require('../config/logger');
 
-const logFile = './logs/server.log';
-const streams = [{
-  level: process.env.LEVEL || 'info',
-  stream: fs.createWriteStream(logFile),
-}];
-if (process.env.NODE_ENV !== 'production') {
-  streams.push({
-    level: 'debug',
-    stream: process.stderr,
-  });
+function getStreams() {
+  const streams = [{
+    level: config.logLevel,
+    stream: fs.createWriteStream(config.logFile, { flag: 'a' }),
+  }];
+
+  if (process.env.NODE_ENV !== 'production') {
+    streams.push({
+      level: config.debugLevel,
+      stream: process.stderr,
+    });
+    streams.push({
+      level: config.debugLevel,
+      stream: fs.createWriteStream(config.debugFile, { flag: 'a' }),
+    });
+  }
+  return streams;
 }
+
 const logger = pino({
-  level: 'debug',
-}, multistream(streams));
+  level: config.debugLevel,
+}, multistream(getStreams()));
 
 pinoDebug(logger, {
   auto: false,
-  map: {
-    'nean:*': 'debug',
-  },
+  map: config.debugMapNs,
 });
 
 module.exports = (name) => {
   if (name) {
     return {
       logger,
-      debug: require('debug')(`nean:${name}`)
+      debug: debug(`${config.debugBaseNs}${name}`),
     };
   }
   return {

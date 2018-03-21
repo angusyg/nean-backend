@@ -1,11 +1,9 @@
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
-const User = require('../models/users');
 const config = require('../config');
-const ApiError = require('../helpers/apierror');
+const User = require('../models/users');
+const ApiError = require('../models/apierror');
 
-const loginEndpoint = config.api.endpoints.login;
-const refreshTokenEndpoint = config.api.endpoints.refreshToken;
 const service = {};
 
 function generateAccessToken(user) {
@@ -20,7 +18,7 @@ function registerRefreshToken(user) {
   return new Promise((resolve, reject) => {
     const refreshToken = uuidv4();
     User.findOneAndUpdate({ _id: user._id }, { refreshToken })
-      .catch(err => reject(new ApiError(loginEndpoint.errors[1], err)))
+      .catch(err => reject(err))
       .then(() => resolve(refreshToken));
   });
 }
@@ -29,12 +27,12 @@ service.login = infos => new Promise((resolve, reject) => {
   User.findOne({ login: infos.login })
     .catch(err => reject(err))
     .then((user) => {
-      if (!user) reject(new ApiError(loginEndpoint.errors[1]));
+      if (!user) reject(ApiError.getByCode('BAD_LOGIN'));
       else {
         user.comparePassword(infos.password)
           .catch(err => reject(err))
           .then((match) => {
-            if (!match) reject(new ApiError(loginEndpoint.errors[2]));
+            if (!match) reject(ApiError.getByCode('BAD_PASSWORD'));
             else {
               registerRefreshToken(user)
                 .catch(err => reject(err))
@@ -50,7 +48,7 @@ service.login = infos => new Promise((resolve, reject) => {
 
 service.refreshToken = (infos, refreshToken) => new Promise((resolve, reject) => {
   User.findOne({ login: infos.login, refreshToken })
-    .catch(err => reject(new ApiError(refreshTokenEndpoint.errors[2], err)))
+    .catch(err => reject(err))
     .then(user => resolve({ accessToken: generateAccessToken(user) }));
 });
 
