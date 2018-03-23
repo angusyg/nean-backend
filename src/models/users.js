@@ -1,6 +1,6 @@
 const Document = require('camo').Document;
 const bcrypt = require('bcrypt');
-const config = require('../config');
+const config = require('../config/app');
 
 const User = class User extends Document {
   constructor() {

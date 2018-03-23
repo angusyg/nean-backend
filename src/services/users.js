@@ -1,6 +1,6 @@
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
-const config = require('../config');
+const config = require('../config/api');
 const User = require('../models/users');
 const ApiError = require('../models/apierror');
 
@@ -27,12 +27,12 @@ service.login = infos => new Promise((resolve, reject) => {
   User.findOne({ login: infos.login })
     .catch(err => reject(err))
     .then((user) => {
-      if (!user) reject(ApiError.getByCode('BAD_LOGIN'));
+      if (!user) reject(new ApiError('BAD_LOGIN'));
       else {
         user.comparePassword(infos.password)
           .catch(err => reject(err))
           .then((match) => {
-            if (!match) reject(ApiError.getByCode('BAD_PASSWORD'));
+            if (!match) reject(new ApiError('BAD_PASSWORD'));
             else {
               registerRefreshToken(user)
                 .catch(err => reject(err))

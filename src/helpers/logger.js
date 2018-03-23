@@ -10,7 +10,6 @@ function getStreams() {
     level: config.logLevel,
     stream: fs.createWriteStream(config.logFile, { flag: 'a' }),
   }];
-
   if (process.env.NODE_ENV !== 'production') {
     streams.push({
       level: config.debugLevel,
@@ -24,23 +23,24 @@ function getStreams() {
   return streams;
 }
 
-const logger = pino({
-  level: config.debugLevel,
-}, multistream(getStreams()));
+const logger = pino({ level: config.debugLevel }, multistream(getStreams()));
 
 pinoDebug(logger, {
   auto: false,
   map: config.debugMapNs,
 });
 
-module.exports = (name) => {
+const selfDebug = debug(`${config.debugBaseNs}:helpers:logger`);
+
+const get = (name) => {
   if (name) {
+    selfDebug(`${config.debugBaseNs}helpers:logger:get: Creating logger for namespace ${name}`);
     return {
       logger,
       debug: debug(`${config.debugBaseNs}${name}`),
     };
   }
-  return {
-    logger,
-  };
+  return { logger };
 };
+
+module.exports = get;

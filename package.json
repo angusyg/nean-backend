@@ -33,13 +33,18 @@
     "camo": "^0.12.3",
     "compression": "^1.7.2",
     "continuation-local-storage": "^3.2.1",
+    "cors": "^2.8.4",
+    "csurf": "^1.9.0",
     "debug": "^3.1.0",
     "express": "^4.16.2",
     "express-pino-logger": "^3.0.1",
+    "helmet": "^3.12.0",
     "jsonwebtoken": "^8.2.0",
+    "kindof": "^2.0.0",
     "pino": "^4.14.0",
     "pino-debug": "^1.1.1",
     "pino-multi-stream": "^3.1.2",
+    "traceback": "^0.3.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

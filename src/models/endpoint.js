@@ -1,6 +1,9 @@
 const getNamespace = require('continuation-local-storage').getNamespace;
 const config = require('../config/api');
-const { debug } = require('../helpers/logger')('models:endpoint');
+const security = require('../helpers/security');
+
+const ns = 'models:endpoint';
+const { debug } = require('../helpers/logger')(ns);
 
 const Endpoint = class Endpoint {
   constructor(name, path, method, secure, data, okCode) {
@@ -10,17 +13,10 @@ const Endpoint = class Endpoint {
     this.secure = secure;
     this.data = data;
     this.httpStatusCodeOK = okCode;
-    this.errors = [{
-      code: 'INTERNAL_ERROR',
-      message: 'An error occured while processing request.',
-      statusCode: config.httpStatus.serverError,
-    }];
+    this.errors = [];
+    this.permissions = [];
     config.api.endpoints.push(this);
-    debug(`New endpoint created : ${JSON.stringify(this)}`);
-  }
-
-  static getByName(name) {
-    return config.api.endpoints.find(endpoint => endpoint.name === name);
+    debug(`${ns}:new: created '${JSON.stringify(this)}'`);
   }
 
   addError(code, message, statusCode) {
@@ -30,7 +26,12 @@ const Endpoint = class Endpoint {
       statusCode,
     };
     this.errors.push(error);
-    debug(`New error added to endpoint '${this.name}' : ${JSON.stringify(error)}`);
+    debug(`${ns}:addError: new error added to endpoint '${this.name}' : ${JSON.stringify(error)}`);
+  }
+
+  addPermission(perm) {
+    this.permissions.push(perm);
+    debug(`${ns}:addPermission: new permission(s) added to endpoint '${this.name}' : '${perm.toString()}'`);
   }
 
   bindToRequest() {
@@ -40,6 +41,7 @@ const Endpoint = class Endpoint {
       nameSpace.bindEmitter(res);
       nameSpace.run(() => {
         nameSpace.set('endpoint', this);
+        debug(`${ns}:bindToRequest: endpoint '${this.name}' binded to request '${req.id}'`);
         next();
       });
     };
@@ -50,8 +52,9 @@ const Endpoint = class Endpoint {
   }
 
   register(router, callback) {
-    router[this.method.toLowerCase()](this.path, this.bindToRequest(), callback);
-    debug(`Endpoint '${this.name}' registered`);
+    if (this.secure) router[this.method.toLowerCase()](this.path, this.bindToRequest(), security.requiresLogin, security.requiresPermission(this.permissions), callback);
+    else router[this.method.toLowerCase()](this.path, this.bindToRequest(), callback);
+    debug(`${ns}:register: endpoint '${this.name}' registered`);
   }
 };
 
