@@ -1,3 +1,12 @@
+/**
+ * Endpoint class module to create and configure an API endpoint
+ * @module models/endpoint
+ * @requires continuation-local-storage
+ * @requires config/api
+ * @requires helpers/security
+ * @requires helpers/logger
+ */
+
 const getNamespace = require('continuation-local-storage').getNamespace;
 const config = require('../config/api');
 const security = require('../helpers/security');
@@ -5,7 +14,7 @@ const security = require('../helpers/security');
 const ns = 'models:endpoint';
 const { debug } = require('../helpers/logger')(ns);
 
-const Endpoint = class Endpoint {
+class Endpoint {
   constructor(name, path, method, secure, data, okCode) {
     this.name = name;
     this.path = path;
@@ -56,6 +65,6 @@ const Endpoint = class Endpoint {
     else router[this.method.toLowerCase()](this.path, this.bindToRequest(), callback);
     debug(`${ns}:register: endpoint '${this.name}' registered`);
   }
-};
+}
 
 module.exports = Endpoint;

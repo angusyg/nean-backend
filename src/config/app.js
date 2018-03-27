@@ -1,3 +1,18 @@
+/**
+ * Express app configuration
+ * @module config/app
+ */
+
+/**
+ * Cross origin middleware configuration
+ * @namespace crossOrigin
+ * @property {function} origin          - Bcrypt salt factor for salt generation
+ * @property {string[]} methods         - Cross origin middleware configuration
+ * @property {string[]} allowedHeaders  - Cross origin middleware configuration
+ * @property {boolean} credentials      - Cross origin middleware configuration
+ * @property {number} maxAge            - Cross origin middleware configuration
+ * @memberof configdd
+ */
 module.exports = {
   saltFactor: 10,
   crossOrigin: {

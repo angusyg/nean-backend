@@ -10,7 +10,7 @@ const errorHandler = require('./helpers/errorhandler');
 const apiController = require('./controllers/api');
 const apiConfig = require('./config/api');
 const appConfig = require('./config/app');
-const db = require('./config/db');
+const dbConfig = require('./config/db');
 const { logger } = require('./helpers/logger')();
 
 const app = express();
@@ -18,7 +18,7 @@ const app = express();
 createNamespace('requestSession');
 
 // Connection to db
-db();
+dbConfig();
 
 app.use(pino({
   logger,

@@ -2,7 +2,7 @@ const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const config = require('../config/api');
 const User = require('../models/users');
-const ApiError = require('../models/apierror');
+const ApiError = require('../models/error/api');
 
 const service = {};
 

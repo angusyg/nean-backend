@@ -1,3 +1,9 @@
+/**
+ * App logger configuration
+ * @module config/logger
+ * @requires path
+ */
+
 const path = require('path');
 
 module.exports = {

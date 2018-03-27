@@ -1,8 +1,33 @@
+/**
+ * API configuration
+ * @module config/api
+ */
+
+/**
+ * API Server domain
+ * @namespace server
+ * @property {string} protocol  - Server protocol (http or https)
+ * @property {string} host      - Server domain name
+ * @property {number|''} port   - Server port
+ */
 const server = {
   protocol: 'http://',
   host: 'localhost',
   port: 8080,
 };
+
+/**
+ * HTTP Status code for API response
+ * @namespace httpStatus
+ * @property {number} serverError           - Internal server error 500
+ * @property {number} unauthorizedAccess    - Unauthorized access to API endpoint 401
+ * @property {number} unauthorizedOperation - Unauthorized operation on API endpoint 403
+ * @property {number} notFound              - API endpoint not found on URL 404
+ * @property {number} authenticationExpired - Access token expired 419
+ * @property {number} ok                    - Response OK 200
+ * @property {number} accepted              - Request accepted, processing 202
+ * @property {number} noContent             - Response with no content 204
+ */
 const httpStatus = {
   serverError: 500,
   unauthorizedAccess: 401,
@@ -26,21 +51,21 @@ module.exports = {
     refreshTokenHeader: 'refresh',
     refreshTokenExpirationTime: 60 * 60 * 24,
     errors: [{
-      code: 'API_NO_ENDPOINT',
+      code: 'NO_ENDPOINT',
       message: 'No endpoint mapped for requested url',
-      httpStatusCode: httpStatus.notFound,
+      statusCode: httpStatus.notFound,
     }, {
-      code: 'API_NOT_AUTHORIZED_OPERATION',
+      code: 'NOT_AUTHORIZED_OPERATION',
       message: 'User not authorized to perform operation on this endpoint',
-      httpStatusCode: httpStatus.unauthorizedOperation,
+      statusCode: httpStatus.unauthorizedOperation,
     }, {
-      code: 'API_NOT_AUTHORIZED_ACCESS',
+      code: 'NOT_AUTHORIZED_ACCESS',
       message: 'User not authorized to access to this endpoint',
-      httpStatusCode: httpStatus.unauthorizedAccess,
+      statusCode: httpStatus.unauthorizedAccess,
     }, {
-      code: 'API_AUTHENTICATION_EXPIRED',
+      code: 'AUTHENTICATION_EXPIRED',
       message: 'Access token has expired',
-      httpStatusCode: httpStatus.authenticationExpired,
+      statusCode: httpStatus.authenticationExpired,
     }],
     endpoints: [],
   },

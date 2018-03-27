@@ -1,8 +1,16 @@
+/**
+ * User class module
+ * @module models/user
+ * @requires camo
+ * @requires bcrypt
+ * @requires config/app
+ */
+
 const Document = require('camo').Document;
 const bcrypt = require('bcrypt');
 const config = require('../config/app');
 
-const User = class User extends Document {
+class User extends Document {
   constructor() {
     super();
     this.login = {
@@ -32,6 +40,6 @@ const User = class User extends Document {
   preSave() {
     this.password = bcrypt.hashSync(this.password, config.saltFactor);
   }
-};
+}
 
 module.exports = User;
