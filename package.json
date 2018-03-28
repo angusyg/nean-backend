@@ -4,9 +4,9 @@
   "description": "Nean stack node express nedb backend application",
   "main": "src/app.js",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "./node_modules/.bin/eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "set DEBUG=nean:* && nodemon"
+    "dev": "set DEBUG=nean:*&& nodemon"
   },
   "repository": {
     "type": "git",
@@ -54,7 +54,9 @@
     "gulp": "^3.9.1",
     "gulp-load-plugins": "^1.5.0",
     "gulp-shell": "^0.6.5",
+    "gulp-util": "^3.0.8",
     "jsdoc": "^3.5.5",
-    "nodemon": "^1.17.2"
+    "nodemon": "^1.17.2",
+    "pump": "^3.0.0"
   }
 }
